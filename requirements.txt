@@ -1,0 +1,20 @@
+# Web Framework
+fastapi>=0.115.6,<0.119.0
+uvicorn[standard]
+pydantic>=2.0.0
+
+# Google ADK
+google-adk==1.20.0
+google-genai==1.53.0
+
+# Guardrails
+nemoguardrails
+
+# Environment & Utilities
+python-dotenv==1.2.1
+
+# HTTP Client (for health checks)
+httpx==0.28.1
+
+# Observability
+agentops

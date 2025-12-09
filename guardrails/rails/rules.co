@@ -1,0 +1,50 @@
+# ============================================
+# Input Rails - 输入检查规则
+# ============================================
+
+# 检查禁止词汇
+define flow check blocked words
+  """检查用户输入是否包含禁止词汇"""
+  $blocked = execute check_blocked_words(text=$user_message)
+  if $blocked
+    bot refuse blocked content
+    stop
+
+# 检查输入长度
+define flow check input length
+  """检查用户输入长度是否超限"""
+  $too_long = execute check_input_length(text=$user_message, max_length=5000)
+  if $too_long
+    bot refuse long input
+    stop
+
+# 检查 Prompt 注入攻击
+define flow check prompt injection
+  """检测潜在的 prompt 注入攻击"""
+  $is_injection = execute check_prompt_injection(text=$user_message)
+  if $is_injection
+    bot refuse injection attempt
+    stop
+
+# ============================================
+# Output Rails - 输出检查规则
+# ============================================
+
+# 屏蔽敏感信息
+define flow mask sensitive info
+  """屏蔽输出中的个人身份信息 (PII)"""
+  $masked = execute mask_pii(text=$bot_message)
+  $bot_message = $masked
+
+# ============================================
+# Bot 响应模板
+# ============================================
+
+define bot refuse blocked content
+  "I'm sorry, but I cannot process this request as it contains content that violates our usage policies."
+
+define bot refuse long input
+  "Your input is too long. Please limit your message to 5000 characters."
+
+define bot refuse injection attempt
+  "I detected a potential security issue with your request. Please rephrase your message."

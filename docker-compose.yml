@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  recruitment-agent:
+    image: agentops_demon-recruitment-agent:v0.2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recruitment-agent
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      # Server configuration
+      - HOST=0.0.0.0
+      - PORT=8080
+      # Google API Key (read from .env file)
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      # CORS configuration (restrict to specific domains in production)
+      - CORS_ORIGINS=*
+      # API configuration
+      - API_TITLE=Recruitment Agent with Guardrails
+      - API_VERSION=1.0.0
+      # Debug mode
+      - DEBUG=false
+      # AgentOps observability
+      - AGENTOPS_API_KEY=${AGENTOPS_API_KEY}
+    volumes:
+      # Mount code directory for development (remove in production)
+      # - .:/app
+      # Mount .env file
+      - ./.env:/app/.env:ro
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# Network configuration (optional)
+networks:
+  default:
+    name: recruitment-network

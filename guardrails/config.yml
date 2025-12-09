@@ -1,0 +1,22 @@
+# NeMo Guardrails Configuration
+# rules based mode
+
+# no models configure, use pure rule mode
+models: []
+
+# Colang version
+colang_version: "1.0"
+
+# enabled Rails
+rails:
+  input:
+    flows:
+      - check blocked words
+      - check input length
+      - check prompt injection
+  output:
+    flows:
+      - mask sensitive info
+
+# custom Actions path
+actions_path: "."
